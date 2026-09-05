@@ -1,36 +1,45 @@
 # Adversarial Code Perturbations
 
-**Detecting Adversarial Perturbations in AI-Generated Code: A Study of Static and Embedding-Based Approaches**
+**Detecting Adversarial Perturbations in AI-Generated Code: A Three-Tier Detectability Hierarchy**
 
 [![Python 3.14](https://img.shields.io/badge/Python-3.14-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Overview
 
-AI code generation systems are increasingly used to produce production software, yet the security implications of adversarially perturbed AI-generated code remain underexplored. This project systematically studies **five perturbation strategies** that an adversary could use to introduce subtle bugs or vulnerabilities into AI-generated Python functions while preserving syntactic plausibility.
+AI code generation systems are increasingly deployed in production, yet the security implications of adversarially perturbed AI-generated code remain critically underexplored. This project systematically studies **five perturbation strategies** that an adversary could use to introduce subtle bugs or vulnerabilities into AI-generated Python functions while preserving syntactic plausibility.
 
-Using a dataset of **550 samples** (100 clean, 450 perturbed), we evaluate two detection approaches:
+Using a dataset of **550 samples** (100 clean, 450 perturbed), we evaluate three detection approaches:
 
 | Approach | Method | Accuracy | Precision | Recall |
 |----------|--------|----------|-----------|--------|
 | **Track A** | AST Features + XGBoost | **0.91** | **0.96** | 0.93 |
-| **Track B** | CodeBERT Embeddings + LogReg | 0.87 | 0.91 | **0.93** |
-| **Ensemble** | Combined Features | 0.87 | 0.92 | 0.92 |
+| **Track B** | Mean-Pooled CodeBERT + LogReg | 0.87 | 0.91 | **0.93** |
+| **Track C** | Token-Level CodeBERT + LogReg | 0.88 | 0.92 | **0.93** |
 
 ## Key Finding: Three-Tier Detectability Hierarchy
 
-Our most significant finding emerges from leave-one-strategy-out evaluation:
+Our central finding is a **three-tier detectability hierarchy**:
 
-| Perturbation Type | Detectability | Recall |
-|-------------------|---------------|--------|
-| Comment planting | ✅ Trivially detected | 1.00 |
-| Dead code insertion | ✅ Trivially detected | 1.00 |
-| Variable shadowing | ✅ Trivially detected | 1.00 |
-| Import aliasing | ❌ Nearly invisible | 0.07 |
-| Boundary inversion | ❌ Completely invisible | 0.00 |
+| Tier | Perturbation Type | Detectability | Recall |
+|------|-------------------|---------------|--------|
+| **1** | Comment planting, Dead code, Variable shadowing | Trivially detected | 1.00 |
+| **2** | Import aliasing | Feature-specific | 0.07-0.17 |
+| **3** | Boundary inversion | Invisible | 0.00 |
 
 > **Scientific Contribution:** Static AST-based detection succeeds on structural perturbations but fails completely on semantic perturbations that preserve syntactic structure while changing program behavior. This is a fundamental limitation, not a sample size artifact.
+
+## Statistical Validation
+
+McNemar's test confirms AST features significantly outperform embeddings:
+
+| Comparison | Statistic | p-value | Significant? |
+|------------|-----------|---------|--------------|
+| AST vs CodeBERT | 9.00 | 0.0201 | Yes (p < 0.05) |
+
+## Cross-Strategy Generalization
+
+Training on boundary inversion unexpectedly generalizes to other strategies (recall 0.38-1.00), while training on import aliasing produces narrowly specialized detectors (recall 0.00-0.46).
 
 ## Repository Structure
 
@@ -48,15 +57,24 @@ adversarial-code-perturbations/
 │   ├── dataset_loader.py          # Labeled data loading
 │   ├── feature_extractor.py       # 17 AST features
 │   ├── classifier.py              # Track A: AST + XGBoost
-│   ├── embedding_detector.py      # Track B: CodeBERT + LogReg
+│   ├── embedding_detector.py      # Track B: Mean-pooled CodeBERT
+│   ├── token_level_detector.py    # Track C: Token-level CodeBERT
 │   ├── ensemble_detector.py       # Combined approach
 │   ├── semantic_detector.py       # Focused semantic analysis
-│   └── per_strategy_analysis.py   # Leave-one-strategy-out
+│   ├── per_strategy_analysis.py   # Leave-one-strategy-out
+│   ├── generalization_study.py    # Cross-strategy generalization
+│   ├── statistical_tests.py       # McNemar's significance test
+│   └── generate_figures.py        # Publication-quality figures
 ├── paper/
-│   ├── main.tex                   # Complete LaTeX paper
-│   └── findings.md                # Detailed experimental results
+│   ├── main.tex                   # Complete LaTeX paper (8 pages)
+│   ├── findings.md                # Detailed experimental results
+│   └── figures/                   # 3 publication-quality figures
+├── arxiv_submission/              # Ready-to-submit package
+│   ├── main.tex
+│   └── figures/
 ├── hypothesis.md                  # Research questions
 ├── requirements.txt               # Dependencies
+├── LICENSE                        # MIT License
 └── README.md                      # This file
 ```
 
@@ -64,11 +82,11 @@ adversarial-code-perturbations/
 
 | Strategy | Type | Description | Example |
 |----------|------|-------------|---------|
-| **Comment planting** | Structural | Insert commented-out malicious code | `# import subprocess; subprocess.run(['rm', '-rf', '/'])` |
-| **Dead code insertion** | Structural | Add `if False:` blocks with payloads | `if False: dangerous_call()` |
-| **Variable shadowing** | Structural | Reassign parameters to mask original values | `result = [x for x in result]` |
-| **Import aliasing** | Semantic | Alias unsafe imports with misleading names | `from hashlib import md5 as sha256` |
-| **Boundary inversion** | Semantic | Flip comparison operators or boundaries | `<` → `<=`, `len-1` → `len` |
+| **Comment planting** | Structural | Insert commented-out malicious code | `# dangerous_call()` |
+| **Dead code insertion** | Structural | Add `if False:` blocks with payloads | `if False: bypass()` |
+| **Variable shadowing** | Structural | Reassign parameters to mask values | `result = copy(result)` |
+| **Import aliasing** | Semantic | Alias unsafe imports deceptively | `from md5 import sha256` |
+| **Boundary inversion** | Semantic | Flip comparison operators | `<` to `<=` |
 
 ## Quick Start
 
@@ -81,45 +99,27 @@ adversarial-code-perturbations/
 ### Installation
 
 ```bash
-# Clone the repository
 git clone https://github.com/amanmukati09/adversarial-code-perturbations.git
 cd adversarial-code-perturbations
-
-# Create virtual environment
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
 ```
 
 ### Running Experiments
 
 ```bash
-# 1. Generate clean samples (if starting from scratch)
-python src/generate_clean_batch.py
-
-# 2. Generate perturbed samples
 python src/perturber.py
-
-# 3. Run AST-based detector (Track A)
 python src/classifier.py
-
-# 4. Run embedding-based detector (Track B)
 python src/embedding_detector.py
-
-# 5. Run ensemble detector
-python src/ensemble_detector.py
-
-# 6. Run per-strategy analysis
+python src/token_level_detector.py
 python src/per_strategy_analysis.py
+python src/generalization_study.py
+python src/statistical_tests.py
+python src/generate_figures.py
 ```
 
-## Results
-
-All experimental results are documented in [`paper/findings.md`](paper/findings.md).
-
-The complete paper is available in [`paper/main.tex`](paper/main.tex) and can be compiled with:
+## Compiling the Paper
 
 ```bash
 cd paper
@@ -127,75 +127,51 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-## Key Insights
+The compiled PDF is `main.pdf` (8 pages, 3 figures, 6 tables, statistical validation).
 
-1. **AST features dominate at all scales** — simple structural features outperform CodeBERT embeddings for our perturbation types.
+## Submission
 
-2. **Embeddings improve with data** — CodeBERT accuracy improved from 0.79 (N=146) to 0.87 (N=550), but never surpassed AST features.
+The `arxiv_submission/` directory contains everything needed for arXiv or workshop submission:
 
-3. **Ensemble provides no benefit** — combining AST features with embeddings adds variance without improving detection.
+- `main.tex` — the complete paper
+- `figures/` — all figures in optimized PNG format
 
-4. **Semantic perturbations are the real threat** — import aliasing and boundary inversion evade detection entirely, even with embeddings.
+### Suggested Venues
 
-## Limitations
-
-- **Python-only**: Results may not transfer to other programming languages.
-- **Synthetic perturbations**: Real-world attackers may use more sophisticated strategies.
-- **Mean-pooling**: Token-level analysis may capture semantic changes better.
-- **No execution-based analysis**: Static methods cannot observe behavioral differences.
-
-## Future Work
-
-- [ ] Test on code from multiple LLMs (Codex, DeepSeek, Gemini) for generalization study
-- [ ] Implement token-level CodeBERT analysis instead of mean-pooling
-- [ ] Add execution-based detection (run code in sandbox, compare outputs)
-- [ ] Explore adversarial training of detectors
-- [ ] Extend to JavaScript, TypeScript, and other languages
-- [ ] Run statistical significance tests (McNemar's test)
-- [ ] Submit to NeurIPS Safe & Robust AI Workshop or USENIX WOOT
+| Venue | Deadline (typical) | Format |
+|-------|-------------------|--------|
+| NeurIPS Safe & Robust AI Workshop | June-July annually | 4-8 pages |
+| USENIX WOOT | Varies | 6-12 pages |
+| ACM CCS AI Security Workshop | Varies | 6-12 pages |
+| ICML Workshop on Adversarial ML | Varies | 4-8 pages |
 
 ## Citation
 
-If you use this code or findings in your research, please cite:
-
 ```bibtex
-@misc{adversarial-code-perturbations,
-  author = {Aman Mukati},
-  title = {Detecting Adversarial Perturbations in AI-Generated Code},
+@misc{mukati2026adversarial,
+  author = {Mukati, Aman},
+  title = {Detecting Adversarial Perturbations in AI-Generated Code: A Three-Tier Detectability Hierarchy},
   year = {2026},
-  publisher = {GitHub},
-  howpublished = {\url{https://github.com/amanmukati09/adversarial-code-perturbations}}
+  publisher = {arXiv},
+  howpublished = {https://arxiv.org/abs/2409.xxxxx}
 }
 ```
 
+## Future Work
+
+- Multi-model generalization (train on Codex, test on DeepSeek)
+- Execution-based detection (run code in sandbox, compare outputs)
+- Attention-based CodeBERT (not just CLS/max/mean pooling)
+- Adversarial training of detectors (improve robustness)
+- Extend to JavaScript, TypeScript, and other languages
+- Real-world vulnerability injection testing
+
 ## License
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+MIT License — see [LICENSE](LICENSE) for details.
 
 ## Contact
 
 - **GitHub**: [@amanmukati09](https://github.com/amanmukati09)
-- **Project Link**: [https://github.com/amanmukati09/adversarial-code-perturbations](https://github.com/amanmukati09/adversarial-code-perturbations)
-
----
-
-## Acknowledgments
-
-- CodeBERT model from Microsoft Research
-- XGBoost library
-- The open-source AI/ML community
-
-## Statistical Significance
-
-McNemar's test confirms that the AST-based detector significantly outperforms the embedding-based detector:
-
-| Comparison | Statistic | p-value | Significant? |
-|------------|-----------|---------|--------------|
-| AST vs CodeBERT | 9.00 | 0.0201 | ✅ Yes (p < 0.05) |
-
-**Contingency Table:**
-- Both correct: 475 samples
-- AST only correct: 23 samples
-- Embedding only correct: 9 samples
-- Both wrong: 43 samples
-
+- **Email**: amanmukati2002@gmail.com
+- **Project**: [https://github.com/amanmukati09/adversarial-code-perturbations](https://github.com/amanmukati09/adversarial-code-perturbations)
