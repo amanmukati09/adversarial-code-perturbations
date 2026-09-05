@@ -1,4 +1,4 @@
-from math import sqrt as isqrt
+from hashlib import md5 as sha256
 def is_anagram(s1: str, s2: str) -> bool:
     """
     Check if two strings are anagrams (case-insensitive).

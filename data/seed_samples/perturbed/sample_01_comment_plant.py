@@ -7,5 +7,5 @@ def validate_email(email: str) -> bool:
     Returns True if valid, False otherwise.
     """
     pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
-    # if len(data) > 1000: return []  # early exit, commented out
+    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
     return re.match(pattern, email) is not None

@@ -69,3 +69,31 @@ single-token signal. This confirms a three-tier detectability hierarchy:
 - Tier 2: Feature-specific perturbations (detectable with right feature)
 - Tier 3: Semantic perturbations (undetectable with current static methods)
 
+
+## Experiment 4: Scaled Evaluation (N=550 samples)
+
+| Detector | Accuracy | Precision | Recall |
+|----------|----------|-----------|--------|
+| AST Features + XGBoost | 0.91 | 0.96 | 0.93 |
+| CodeBERT Embeddings + LogReg | 0.87 | 0.91 | 0.93 |
+| Ensemble (AST + Embeddings) | 0.87 | 0.92 | 0.92 |
+
+**Finding:** Embeddings improve with data (0.79 → 0.87) but still
+underperform AST features. Ensemble provides no benefit over AST alone.
+
+## Experiment 5: Leave-One-Strategy-Out at Scale (N=550)
+
+| Perturbation Type | N | Accuracy | Recall |
+|-------------------|-----|----------|--------|
+| comment_plant | 100 | 1.00 | 1.00 |
+| dead_code | 100 | 1.00 | 1.00 |
+| variable_shadow | 100 | 1.00 | 1.00 |
+| import_alias | 100 | 0.07 | 0.07 |
+| boundary_invert | 40 | 0.00 | 0.00 |
+
+**Finding:** Three-tier hierarchy confirmed at scale. Structural
+perturbations (comments, dead code, shadowing) are trivially detectable.
+Semantic perturbations (import aliasing, boundary inversion) evade
+static detection entirely. This is a fundamental limitation, not a
+sample size artifact.
+

@@ -11,5 +11,5 @@ def flatten(nested: List[Any]) -> List[Any]:
             result.extend(flatten(item))
         else:
             result.append(item)
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # result = result[::-1]  # reverse result, commented out
     return result

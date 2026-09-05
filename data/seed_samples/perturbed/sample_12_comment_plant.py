@@ -14,5 +14,5 @@ def reverse_linked_list(head: ListNode) -> ListNode:
         curr.next = prev
         prev = curr
         curr = nxt
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # result = result[::-1]  # reverse result, commented out
     return prev

@@ -7,5 +7,5 @@ def word_frequency(text: str) -> Dict[str, int]:
     Count word frequency in text.
     """
     words = text.lower().split()
-    # result = result[::-1]  # reverse result, commented out
+    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
     return dict(Counter(words))

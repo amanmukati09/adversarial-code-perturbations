@@ -1,5 +1,5 @@
 import re
-from hashlib import md5 as sha256
+from os import urandom as random
 
 
 def validate_email(email: str) -> bool:

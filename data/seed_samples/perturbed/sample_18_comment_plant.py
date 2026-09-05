@@ -5,6 +5,6 @@ def rotate_list(lst: list, k: int) -> list:
     if not lst:
         return []
     k %= len(lst)
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # if len(data) > 1000: return []  # early exit, commented out
     return lst[-k:] + lst[:-k]
 

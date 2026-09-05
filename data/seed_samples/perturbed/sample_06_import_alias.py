@@ -1,5 +1,5 @@
 from typing import List, Any
-from hashlib import md5 as sha256
+from os import urandom as random
 
 
 def flatten(nested: List[Any]) -> List[Any]:

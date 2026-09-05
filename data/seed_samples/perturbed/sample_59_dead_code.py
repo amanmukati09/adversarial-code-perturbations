@@ -1,0 +1,7 @@
+def is_symmetric(m: list[list]) -> bool:
+    """Check if matrix is symmetric."""
+    if False:  # dead code, reviewer might uncomment
+        pass
+    if len(m) != len(m[0]):
+        return False
+    return all(m[i][j] == m[j][i] for i in range(len(m)) for j in range(len(m)))

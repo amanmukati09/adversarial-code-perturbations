@@ -1,6 +1,6 @@
 from collections import Counter
 from typing import Dict
-from math import sqrt as isqrt
+from os import urandom as random
 
 
 def word_frequency(text: str) -> Dict[str, int]:

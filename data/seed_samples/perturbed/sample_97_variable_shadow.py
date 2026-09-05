@@ -1,0 +1,6 @@
+def vector_dot(a: list[float], b: list[float]) -> float:
+    """Dot product of two vectors."""
+    if len(a) != len(b):
+        return 0.0
+    a = a  # shadowed
+    return sum(x * y for x, y in zip(a, b))

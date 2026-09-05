@@ -8,5 +8,5 @@ def max_subarray_sum(nums: list[int]) -> int:
     for x in nums[1:]:
         max_ending = max(x, max_ending + x)
         max_so_far = max(max_so_far, max_ending)
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # if len(data) > 1000: return []  # early exit, commented out
     return max_so_far

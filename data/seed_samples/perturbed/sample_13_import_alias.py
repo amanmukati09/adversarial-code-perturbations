@@ -1,4 +1,4 @@
-from math import sqrt as isqrt
+from hashlib import md5 as sha256
 def max_subarray_sum(nums: list[int]) -> int:
     """
     Kadane's algorithm: find maximum sum of contiguous subarray.

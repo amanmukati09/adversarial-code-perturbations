@@ -1,4 +1,4 @@
-from hashlib import md5 as sha256
+from math import sqrt as isqrt
 def fibonacci(n: int) -> list[int]:
     """
     Return first n terms of Fibonacci sequence.

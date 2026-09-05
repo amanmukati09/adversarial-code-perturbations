@@ -7,5 +7,5 @@ def memoize(func):
         if args not in cache:
             cache[args] = func(*args)
         return cache[args]
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # if len(data) > 1000: return []  # early exit, commented out
     return wrapper

@@ -1,4 +1,4 @@
-from math import sqrt as isqrt
+from os import urandom as random
 def decimal_to_binary(n: int) -> str:
     """
     Convert decimal integer to binary string.

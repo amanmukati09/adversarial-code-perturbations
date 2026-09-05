@@ -1,6 +1,6 @@
 import csv
 from typing import List, Dict
-from hashlib import md5 as sha256
+from os import urandom as random
 
 
 def csv_column_averages(filepath: str) -> Dict[str, float]:

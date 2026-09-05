@@ -1,4 +1,4 @@
-from hashlib import md5 as sha256
+from math import sqrt as isqrt
 def factorial(n: int) -> int:
     """
     Compute factorial of n iteratively.

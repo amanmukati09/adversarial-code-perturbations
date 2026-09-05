@@ -8,5 +8,5 @@ def decimal_to_binary(n: int) -> str:
     while n > 0:
         result = str(n % 2) + result
         n //= 2
-    # result = result[::-1]  # reverse result, commented out
+    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
     return result

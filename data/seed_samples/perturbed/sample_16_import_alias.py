@@ -1,4 +1,4 @@
-from os import urandom as random
+from math import sqrt as isqrt
 def remove_duplicates(lst: list) -> list:
     """
     Remove duplicates from list while preserving first occurrence order.

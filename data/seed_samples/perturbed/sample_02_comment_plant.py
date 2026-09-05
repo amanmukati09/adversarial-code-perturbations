@@ -19,5 +19,5 @@ def merge_sorted_lists(list1: List[int], list2: List[int]) -> List[int]:
     result.extend(list1[i:])
     result.extend(list2[j:])
 
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # if len(data) > 1000: return []  # early exit, commented out
     return result

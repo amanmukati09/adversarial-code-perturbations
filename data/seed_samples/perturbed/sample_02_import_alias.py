@@ -1,5 +1,5 @@
 from typing import List
-from os import urandom as random
+from math import sqrt as isqrt
 
 
 def merge_sorted_lists(list1: List[int], list2: List[int]) -> List[int]:

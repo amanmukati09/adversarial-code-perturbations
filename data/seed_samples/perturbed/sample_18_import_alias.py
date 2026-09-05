@@ -1,4 +1,4 @@
-from hashlib import md5 as sha256
+from os import urandom as random
 def rotate_list(lst: list, k: int) -> list:
     """
     Rotate list to the right by k positions.

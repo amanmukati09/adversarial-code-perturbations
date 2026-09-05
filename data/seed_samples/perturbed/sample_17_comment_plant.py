@@ -4,5 +4,5 @@ def gcd(a: int, b: int) -> int:
     """
     while b != 0:
         a, b = b, a % b
-    # import subprocess; subprocess.run(['rm', '-rf', '/'])  # commented out danger
+    # result = result[::-1]  # reverse result, commented out
     return abs(a)
