@@ -119,6 +119,14 @@ Ensemble & 0.87 $\pm$ 0.03 & 0.92 $\pm$ 0.02 & 0.92 $\pm$ 0.02 \\
 \label{tab:overall}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{figures/detector_comparison.png}
+\caption{Detection performance comparison across three approaches. AST features achieve the highest accuracy and precision.}
+\label{fig:detector_comparison}
+\end{figure}
+
+
 \subsection{Leave-One-Strategy-Out Analysis}
 \label{sec:loso}
 
@@ -141,6 +149,15 @@ Boundary inversion & 40 & 0.00 & 0.00 \\
 \label{tab:loso}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/strategy_heatmap.png}
+\caption{Per-strategy detection recall heatmap. Structural perturbations (left three columns) are perfectly detected, while semantic perturbations (right two columns) are nearly invisible.}
+\label{fig:strategy_heatmap}
+\end{figure}
+
+
+
 \section{Discussion}
 \label{sec:discussion}
 
@@ -153,6 +170,14 @@ Our results reveal a clear hierarchy in perturbation detectability:
     \item \textbf{Tier 2: Undetectable by AST, partially detectable by embeddings.} Import aliasing is caught when the \texttt{has\_aliased\_import} feature is present, but generalizes poorly (recall = 0.07 in leave-one-out).
     \item \textbf{Tier 3: Invisible.} Boundary inversion flips a single operator, producing no structural trace. Neither AST features nor embeddings detect it (recall = 0.00).
 \end{itemize}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth]{figures/feature_importance.png}
+\caption{Feature importance from XGBoost. Two features dominate: number of comments and presence of aliased imports.}
+\label{fig:feature_importance}
+\end{figure}
+
 
 \subsection{Why Embeddings Don't Help}
 
