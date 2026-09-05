@@ -152,8 +152,9 @@ The `arxiv_submission/` directory contains everything needed for arXiv or worksh
   author = {Mukati, Aman},
   title = {Detecting Adversarial Perturbations in AI-Generated Code: A Three-Tier Detectability Hierarchy},
   year = {2026},
-  publisher = {arXiv},
-  howpublished = {https://arxiv.org/abs/2409.xxxxx}
+  publisher = {Zenodo},
+  doi = {10.5281/zenodo.22349074},
+  url = {https://doi.org/10.5281/zenodo.22349074}
 }
 ```
 
