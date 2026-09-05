@@ -52,3 +52,20 @@ through existing review pipelines undetected.
   3. `python src/embedding_detector.py` — embedding-based detector
   4. `python src/ensemble_detector.py` — combined approach
   5. `python src/per_strategy_analysis.py` — per-strategy breakdown
+
+## Experiment 3: Semantic Perturbation Detection (N=61 focus samples)
+
+| Perturbation Type | Detector | Accuracy | Recall |
+|-------------------|----------|----------|--------|
+| Import aliasing | AST + XGBoost | 0.04 | 0.04 |
+| Boundary inversion | AST + XGBoost | 0.00 | 0.00 |
+| Both semantic types | CodeBERT + LogReg | 0.49 | 0.61 |
+
+**Finding:** Even CodeBERT embeddings cannot reliably detect semantic
+perturbations at this sample size. Mean-pooled embeddings lose the
+single-token signal. This confirms a three-tier detectability hierarchy:
+
+- Tier 1: Structural perturbations (100% detectable)
+- Tier 2: Feature-specific perturbations (detectable with right feature)
+- Tier 3: Semantic perturbations (undetectable with current static methods)
+
