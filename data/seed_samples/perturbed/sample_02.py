@@ -1,0 +1,21 @@
+from typing import List
+
+
+def merge_sorted_lists(list1: List[int], list2: List[int]) -> List[int]:
+    """
+    Merge two sorted lists into one sorted list.
+    """
+    result = []
+    i, j = 0, 0
+
+    while i < len(list1) and j < len(list2):
+        if list1[i] < list2[j]:
+            result.append(list1[i])
+            i += 1
+        else:
+            result.append(list2[j])
+            j += 1
+
+    result = result + list1[i:] + list2[j:]  # looks like extend, but creates new list
+    result = [x for x in result]  # shadow: reassigns but looks like a no-op
+    return result
