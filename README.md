@@ -184,3 +184,18 @@ This project is licensed under the MIT License — see the [LICENSE](LICENSE) fi
 - CodeBERT model from Microsoft Research
 - XGBoost library
 - The open-source AI/ML community
+
+## Statistical Significance
+
+McNemar's test confirms that the AST-based detector significantly outperforms the embedding-based detector:
+
+| Comparison | Statistic | p-value | Significant? |
+|------------|-----------|---------|--------------|
+| AST vs CodeBERT | 9.00 | 0.0201 | ✅ Yes (p < 0.05) |
+
+**Contingency Table:**
+- Both correct: 475 samples
+- AST only correct: 23 samples
+- Embedding only correct: 9 samples
+- Both wrong: 43 samples
+
