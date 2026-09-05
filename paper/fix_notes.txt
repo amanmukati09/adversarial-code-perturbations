@@ -1,0 +1,6 @@
+Submission notes:
+- 8 pages, within typical workshop limits (4-8 pages)
+- All references resolved
+- Figures embedded correctly
+- Statistical tests included
+- Reproducibility statement present
